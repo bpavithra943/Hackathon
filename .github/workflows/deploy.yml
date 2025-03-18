@@ -40,7 +40,7 @@ jobs:
       # Step 3: Track Large Files with Git LFS
       - name: Track Large Files with Git LFS
         run: |
-          git lfs track "Usecase_1/Infra/.terraform/providers/registry.terraform.io/hashicorp/aws/5.88.0/linux_amd64/terraform-provider-aws_v5.88.0_x5"
+          git lfs track ".terraform/providers/registry.terraform.io/hashicorp/aws/5.88.0/linux_amd64/terraform-provider-aws_v5.88.0_x5"
           git add .gitattributes  # Make sure to add the .gitattributes file that git-lfs uses
 
       # Step 4: Commit Changes (If Needed)
@@ -71,18 +71,16 @@ jobs:
       # Step 8: Terraform Init & Plan
       - name: Terraform Init
         run: terraform init
-        working-directory: ./Usecase_1/Infra
 
       - name: Terraform Plan
-        run: terraform plan -var-file=../Env/terraform.tfvars
-        working-directory: ./Usecase_1/Infra
+        run: terraform plan -var-file=./Env/terraform.tfvars
 
       # Step 9: Generate Terraform Docs Markdown
       - name: Generate Markdown with Terraform Docs
         if: github.event_name == 'push' || github.event_name == 'pull_request'
         uses: terraform-docs/gh-actions@v1.3.0
         with:
-          working-dir: ./Usecase_1/Infra
+          working-dir: .
           output-file: README.md
           output-method: inject
           git-push: true
@@ -103,12 +101,11 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           header: "Terraform Documentation 📖"
-          path: "./Usecase_1/Infra/README.md"
+          path: "./README.md"
 
       # Step 12: Apply Terraform Changes on PR Merge
       - name: Apply Terraform on Merge
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
-          cd ./Usecase_1/Infra
           terraform init
-          terraform apply -var-file=../Env/terraform.tfvars -auto-approve
+          terraform apply 
