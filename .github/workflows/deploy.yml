@@ -73,7 +73,7 @@ jobs:
         run: terraform init
 
       - name: Terraform Plan
-        run: terraform plan -var-file=./Env/terraform.tfvars
+        run: terraform plan
 
       # Step 9: Generate Terraform Docs Markdown
       - name: Generate Markdown with Terraform Docs
